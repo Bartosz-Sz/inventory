@@ -1,27 +1,64 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div class="appWrapper">
+    <div v-if="loadingstaticData">
+      Loading static data...
+    </div>
+    <nested-list v-else :items="inventory" />
+  </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import HelloWorld from './components/HelloWorld.vue';
+import NestedList from './components/NestedList.vue';
+import { InventoryObject } from './store';
 
 @Options({
   components: {
-    HelloWorld,
+    NestedList,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  loadingstaticData = false
+
+  get inventory(): Array<InventoryObject> {
+    return this.$store.getters.inventory
+  }
+
+  loadStaticData(): void {
+    this.loadingstaticData = true
+    this.$store.dispatch('loadStaticData')
+    this.loadingstaticData = false
+  }
+
+  beforeMount(): void {
+    this.loadStaticData()
+  }
+}
 </script>
 
+<style lang="scss" scoped>
+.appWrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: lightgray;
+
+  * {
+    box-shadow: gray 5px 5px 15px;
+  }
+}
+</style>
+
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+// Global styles
+body {
+  margin: 0;
+  overflow: hidden;
+}
+* {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
 }
 </style>
