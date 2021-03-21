@@ -8,7 +8,7 @@
     <div class="itemLabel flex flex-nowrap">
       <div
         class="evolve-btn w-4 flex-shrink-0 text-center cursor-pointer"
-        @click="toggleEvolution"
+        @click="evolved = !evolved"
       >
         {{ hasChildren ? (evolved ? "-" : "+") : '' }}
       </div>
@@ -45,14 +45,8 @@ export default class TreeNode extends Vue {
   @Prop(Number) totalIssues!: number
 
   tree = Tree
-
   evolved = false
-
   highlight = false
-
-  toggleEvolution(): void {
-    this.evolved = !this.evolved;
-  }
 
   get hasChildren(): boolean {
     return Boolean(this.item.children?.length)
