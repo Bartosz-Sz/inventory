@@ -3,13 +3,17 @@
     <div v-if="loadingstaticData">
       Loading static data...
     </div>
-    <nested-list v-else :items="inventory" />
+    <nested-list
+      v-else
+      :items="inventory"
+      isRootList
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import NestedList from './components/NestedList.vue';
+import NestedList from '@/components/NestedList.vue';
 import { InventoryObject } from './store';
 
 @Options({
