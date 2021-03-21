@@ -1,15 +1,19 @@
 import { createStore } from 'vuex'
-import staticData from '@/assets/tree'
+import treeJSON from '@/assets/tree.json'
 
-interface StaticDataParsed {
-  resultDetails: Array<InventoryObject>
-}
+const staticData: {
+  resultDetails: Array<InventoryObjectRaw>
+} = treeJSON
 
-export interface InventoryObject {
-  id: string,
+export interface InventoryObjectRaw {
+  id: string | number,
   name: string,
   discoveredIssues: number,
-  children: Array<InventoryObject>
+  children: Array<InventoryObjectRaw>,
+}
+
+export interface InventoryObject extends InventoryObjectRaw {
+  nestedIssues: number
 }
 
 export interface State {
@@ -31,9 +35,43 @@ export default createStore({
     }
   },
   actions: {
-    loadStaticData({ commit }) {
-      const inventory = (JSON.parse(staticData) as StaticDataParsed).resultDetails
-      commit('APPEND_TO_INVENTORY', inventory)
+    loadStaticInventory({ commit }) {
+      const inventory = staticData.resultDetails
+
+      /*
+        It's early optimization, not really necessary.
+        Otherwise objects need to be crawled in Tree or TreeNode (which is a bit inefficient).
+      */
+      const withNestedIssues = (item: InventoryObjectRaw): InventoryObject => {
+        let nestedIssues = 0
+        const hasChildren = Boolean(item.children?.length)
+        if (!hasChildren) {
+          return { ...item, nestedIssues }
+        }
+
+        const childrenWithNestedIssues = item.children.reduce((acc, child) => {
+          return [...acc, withNestedIssues(child)]
+        }, [] as Array<InventoryObject>)
+
+        nestedIssues = childrenWithNestedIssues.reduce((acc, child) => {
+          return acc + child.nestedIssues + child.discoveredIssues
+        }, 0)
+
+        return {
+          ...item,
+          children: [ ...childrenWithNestedIssues ],
+          nestedIssues
+        }
+      }
+
+      const inventoryWithNestedIssues = inventory.reduce((acc, item) => {
+        return [
+          ...acc,
+          withNestedIssues(item)
+        ]
+      }, [] as Array<InventoryObject>)
+
+      commit('APPEND_TO_INVENTORY', inventoryWithNestedIssues)
     }
   },
 })

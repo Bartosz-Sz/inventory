@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ rootListWrapper: isRootList }" class="listWrapper">
+  <div :class="{ rootListWrapper: isRootList }" class="listWrapper w-full">
     <template v-if="items.length">
       <component
         :is="treeNode"

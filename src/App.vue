@@ -29,14 +29,14 @@ export default class App extends Vue {
     return this.$store.getters.inventory
   }
 
-  loadStaticData(): void {
+  loadStaticInventory(): void {
     this.loadingstaticData = true
-    this.$store.dispatch('loadStaticData')
+    this.$store.dispatch('loadStaticInventory')
     this.loadingstaticData = false
   }
 
   beforeMount(): void {
-    this.loadStaticData()
+    this.loadStaticInventory()
   }
 }
 </script>

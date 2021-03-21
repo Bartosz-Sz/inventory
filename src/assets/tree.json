@@ -1,7 +1,7 @@
-const staticData = JSON.stringify({
+{
     "resultDetails": [
       {
-          "id": "2772",
+          "id": 2772,
           "name": "bellatrix-vC67.solar.system",
           "discoveredIssues": 934,
           "children": [
@@ -12298,6 +12298,4 @@ const staticData = JSON.stringify({
           ]
       }
    ]
-})
-
-export default staticData
+}

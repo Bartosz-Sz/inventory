@@ -1,5 +1,10 @@
 <template>
-  <div class="w-full">
+  <div
+    class="w-full"
+    :class="{ highlight }"
+    @mouseenter="highlight = true"
+    @mouseleave="highlight = false"
+  >
     <div class="itemLabel flex flex-nowrap">
       <div
         class="evolve-btn w-4 flex-shrink-0 text-center cursor-pointer"
@@ -17,9 +22,14 @@
         {{ nestedIssues }}
       </div>
     </div>
-    <div v-if="hasChildren && evolved" class="flex flex-nowrap">
+    <div
+      v-if="hasChildren && evolved"
+      class="flex flex-nowrap"
+      @mouseenter="highlight = false"
+      @mouseleave="highlight = true"
+    >
       <div class="w-5"><!-- Indent --></div>
-      <component :is="tree" :items="item.children" />
+      <component :is="tree" :items="item.children" :totalIssues="totalIssues" />
     </div>
   </div>
 </template>
@@ -32,10 +42,13 @@ import Tree from './Tree.vue'
 
 export default class TreeNode extends Vue {
   @Prop(Object) item!: InventoryObject
+  @Prop(Number) totalIssues!: number
 
   tree = Tree
 
   evolved = false
+
+  highlight = false
 
   toggleEvolution(): void {
     this.evolved = !this.evolved;
@@ -54,24 +67,16 @@ export default class TreeNode extends Vue {
   }
 
   get nestedIssues(): number {
-    const getSubtreeIssues = (currentItem: InventoryObject): number => {
-      const ownIssues = Number(currentItem.discoveredIssues)
-      const hasChildren = Boolean(currentItem.children?.length)
-      if (!hasChildren) return ownIssues
-
-      const nestedIssues = currentItem.children.reduce((acc, child) => {
-        return acc + getSubtreeIssues(child)
-      }, 0)
-
-      return ownIssues + nestedIssues
-    }
-
-    return getSubtreeIssues(this.item) - this.ownIssues
+    return this.item.nestedIssues
   }
  }
 </script>
 
 <style lang="postcss" scoped>
+.highlight {
+  background: lightgreen;
+  transition: background 0.22s;
+}
 .itemLabel {
   white-space: nowrap;
 
