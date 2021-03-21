@@ -2,7 +2,7 @@
   <div :class="{ rootListWrapper: isRootList }" class="listWrapper">
     <template v-if="items.length">
       <component
-        :is="ListItem"
+        :is="treeNode"
         v-for="item in items"
         :key="item.id"
         :item="item"
@@ -12,30 +12,28 @@
 </template>
 
 <script lang="ts">
-import { InventoryObject } from '@/store';
-import { Vue } from 'vue-class-component';
+import { InventoryObject } from '@/store'
+import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
-import ListItem from '@/components/ListItem.vue';
+import TreeNode from '@/components/TreeNode.vue'
 
 export default class NestedList extends Vue {
   @Prop(Array) items: Array<InventoryObject> = []
   @Prop(Boolean) isRootList = false
 
-  ListItem = ListItem
+  treeNode = TreeNode
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .listWrapper {
-  display: flex;
-  flex-flow: column nowrap;
-  background-color: white;
   overflow: auto;
 
   &.rootListWrapper {
+    background-color: #F7F7F7;
     width: 498px;
+    height: 500px;
     max-height: 80%;
-    min-height: 500px;
     max-width: 80%;
     padding: 8px;
   }

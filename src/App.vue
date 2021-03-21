@@ -1,9 +1,9 @@
 <template>
-  <div class="appWrapper">
+  <div class="appWrapper flex items-center justify-center">
     <div v-if="loadingstaticData">
       Loading static data...
     </div>
-    <nested-list
+    <tree
       v-else
       :items="inventory"
       isRootList
@@ -12,13 +12,14 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import NestedList from '@/components/NestedList.vue';
-import { InventoryObject } from './store';
+import { Options, Vue } from 'vue-class-component'
+import Tree from '@/components/Tree.vue'
+import { InventoryObject } from './store'
+import "tailwindcss/tailwind.css"
 
 @Options({
   components: {
-    NestedList,
+    Tree,
   },
 })
 export default class App extends Vue {
@@ -40,13 +41,10 @@ export default class App extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="postcss" scoped>
 .appWrapper {
   width: 100vw;
   height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background-color: lightgray;
 
   * {
@@ -55,7 +53,7 @@ export default class App extends Vue {
 }
 </style>
 
-<style lang="scss">
+<style lang="postcss">
 // Global styles
 body {
   margin: 0;
